@@ -16,7 +16,7 @@ for i in range(len(tokens)):
         if token not in inverted_index:
             inverted_index[token] = [i, 1, [index]]
         else:
-            if inverted_index[token][0] == i!
+            if inverted_index[token][0] == i
 
         inverted_index[token][1] +=1
         inverted_index[token][2].append(index)
