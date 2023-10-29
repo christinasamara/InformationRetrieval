@@ -9,11 +9,13 @@ stop_words = nltk.corpus.stopwords.words('english')
 tokens = []
 inverted_index = {}
 flag = 0
+doc_length = len(os.listdir("C:\\Users\\chris\\Downloads\\ir_project\\docs"))
+
 for filename in glob.glob("C:\\Users\\chris\\Downloads\\ir_project\\docs\*"):
     with open(os.path.join(os.getcwd(), filename), "r") as f:
         text = f.read()
         tokens.append(text.lower().split("\n"))
-       
+
 
 for i in range(len(tokens)):
     for index, token in enumerate(tokens[i]):
@@ -30,13 +32,21 @@ for i in range(len(tokens)):
                     else:
                         inverted_index[token][i] = [1, [index]]
 
-for key, value in inverted_index.items():
-    print(key, ":", value)
 
+vector_space = []
 
-        
+for i in range(doc_length):
+    vector_space.append([])
 
+for i in range(doc_length):
+    for key, value in inverted_index.items():
+        temp = value.setdefault(i, 0)
+        if (temp != 0):
+            vector_space[i].append(temp[0])
+        else:
+            vector_space[i].append(0)
 
-
+#for i in range(len(vector_space)):
+#    print(len(vector_space[i]))
 
 
