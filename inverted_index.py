@@ -46,7 +46,5 @@ for i in range(doc_length):
         else:
             vector_space[i].append(0)
 
-#for i in range(len(vector_space)):
-#    print(len(vector_space[i]))
-
+#mia synarthsh eksw na ypoloigizei ta barh
 
