@@ -2,6 +2,7 @@ import glob
 import os
 import numpy as np
 import nltk 
+import math
  
 
 nltk.download('stopwords')
@@ -10,6 +11,28 @@ tokens = []
 inverted_index = {}
 flag = 0
 doc_length = len(os.listdir("C:\\Users\\chris\\Downloads\\ir_project\\docs"))
+
+def find_n(token):
+    count = 0
+    for key, value in inverted_index.items():
+        if (value == token):
+            count = len(value) 
+    return count
+
+def tfc (token, tf):
+    N = doc_length
+    n = find_n(token)
+    return tf * math.log(N/n)
+
+def txc (token, tf):
+    N = doc_length
+    n = find_n(token)
+    return tf 
+
+def normalize():
+    sums = np.sum(vector_space, axis=1)
+    return sums
+
 
 for filename in glob.glob("C:\\Users\\chris\\Downloads\\ir_project\\docs\*"):
     with open(os.path.join(os.getcwd(), filename), "r") as f:
@@ -42,9 +65,9 @@ for i in range(doc_length):
     for key, value in inverted_index.items():
         temp = value.setdefault(i, 0)
         if (temp != 0):
-            vector_space[i].append(temp[0])
+            vector_space[i].append(tfc(value, temp[0]))
         else:
             vector_space[i].append(0)
 
-#mia synarthsh eksw na ypoloigizei ta barh
-
+sums = normalize()
+print(sums)
