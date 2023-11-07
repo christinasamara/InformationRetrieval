@@ -4,7 +4,6 @@ import numpy as np
 import nltk 
 import math
  
-
 nltk.download('stopwords')
 stop_words = nltk.corpus.stopwords.words('english')
 tokens = []
