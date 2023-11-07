@@ -14,7 +14,7 @@ doc_length = len(os.listdir("C:\\Users\\chris\\Downloads\\ir_project\\docs"))
 def find_n(token):
     count = 0
     for key, value in inverted_index.items():
-        if (value == token):
+        if (key == token):
             count = len(value) 
     return count
 
@@ -30,19 +30,30 @@ def nis():
         ni.append(find_n(i))
 
 
+
+
 #normalization for each doc_vector
 def paronomastistfc(doc):
     arrayparonom = []
     N = doc_length
-    for i in range(len(vector_space[doc])):
-        arrayparonom.append( (vector_space[doc][i] * math.log(N/ni[i])) ** 2 )
-    print(arrayparonom)
+
+    for key, value in inverted_index.items():
+        for key2, value2 in value.items():
+            if (key2 == doc):
+                arrayparonom.append( (value2[0] * math.log(N/ni[i])) ** 2 )
+                print(value2)
     return sum(arrayparonom)
+
+#bgazei la8os epeidh to teleytaio keimeno einai ola 0
 
 def tfc (token, tf, doc):
     N = doc_length
     n = find_n(token)
-    return ( tf * math.log(N/n) ) / paronomastistfc(doc)
+    print(n)
+    if (paronomastistfc(doc)!= 0 and n!=0):
+        return ( tf * math.log(N/n) ) / paronomastistfc(doc)
+    else:
+        return 0.0
 
 
 for filename in glob.glob("C:\\Users\\chris\\Downloads\\ir_project\\docs\*"):
@@ -66,6 +77,7 @@ for i in range(len(tokens)):
                     else:
                         inverted_index[token][i] = [1, [index]]
 
+
 nis()
 vector_space = []
 
@@ -83,5 +95,5 @@ for doc in range(doc_length):
     row += 1 
 
 
-for i in range(len(vector_space)):
-    print(vector_space[i])
+#for i in range(len(vector_space)):
+#    print(vector_space[i])
