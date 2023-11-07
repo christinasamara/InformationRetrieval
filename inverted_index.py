@@ -18,19 +18,31 @@ def find_n(token):
             count = len(value) 
     return count
 
-def tfc (token, tf):
-    N = doc_length
-    n = find_n(token)
-    return tf * math.log(N/n)
-
 def txc (token, tf):
     N = doc_length
     n = find_n(token)
     return tf 
 
-def normalize():
-    sums = np.sum(vector_space, axis=1)
-    return sums
+ni = []
+#array2 -> nonzero elements in each column (ni)
+def nis():
+    for i in inverted_index.keys():
+        ni.append(find_n(i))
+
+
+#normalization for each doc_vector
+def paronomastistfc(doc):
+    arrayparonom = []
+    N = doc_length
+    for i in range(len(vector_space[doc])):
+        arrayparonom.append( (vector_space[doc][i] * math.log(N/ni[i])) ** 2 )
+    print(arrayparonom)
+    return sum(arrayparonom)
+
+def tfc (token, tf, doc):
+    N = doc_length
+    n = find_n(token)
+    return ( tf * math.log(N/n) ) / paronomastistfc(doc)
 
 
 for filename in glob.glob("C:\\Users\\chris\\Downloads\\ir_project\\docs\*"):
@@ -54,19 +66,22 @@ for i in range(len(tokens)):
                     else:
                         inverted_index[token][i] = [1, [index]]
 
-
+nis()
 vector_space = []
 
 for i in range(doc_length):
     vector_space.append([])
 
-for i in range(doc_length):
+row = 0
+for doc in range(doc_length):
     for key, value in inverted_index.items():
-        temp = value.setdefault(i, 0)
+        temp = value.setdefault(row, 0)
         if (temp != 0):
-            vector_space[i].append(tfc(value, temp[0]))
+            vector_space[row].append(tfc(value, temp[0], doc))
         else:
-            vector_space[i].append(0)
+            vector_space[row].append(0)
+    row += 1 
 
-sums = normalize()
-print(sums)
+
+for i in range(len(vector_space)):
+    print(vector_space[i])
