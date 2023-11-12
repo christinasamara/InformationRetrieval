@@ -39,26 +39,22 @@ def normalization(doc):
     sum = 0
     for key, value in inverted_index.items():
         ni = len(value)
-        for key2 in value.keys():
+        for key2, value2 in value.items():
             if (key2 == doc):
-                tfi = inverted_index[key][key2][0]
-                sum +=  math.sqrt((tfi * math.log(N/ni)) ** 2)
-    print(sum)
+                #tfi = inverted_index[key][key2][0]
+                tfi2 = value.setdefault(key2, 0)
+                sum +=  math.sqrt((tfi2[0] * math.log(N/ni)) ** 2)
+    #print(sum)
     return(sum)
-         
-
-    
-
-
 
 #bgazei la8os epeidh to teleytaio keimeno einai ola 0
 
 def tfc (token, tf, doc):
     N = doc_length
     n = find_n(token)
+    #print(tf, 'deytero')
     #print(n, N)
     if (normalization(doc)!= 0 and n!=0):
-        print(tf[0], math.log(N/n))
         return ( tf * math.log(N/n) ) / normalization(doc)
     else:
         return 0.0
@@ -100,7 +96,7 @@ for doc in range(doc_length):
             vector_space[doc].append(tfc(key, temp[0], doc))
         else:
             vector_space[doc].append(0)
-    print(doc)
+    #print(doc)
 
 
 
