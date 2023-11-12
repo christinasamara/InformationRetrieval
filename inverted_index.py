@@ -52,7 +52,7 @@ def tfc (token, tf, doc):
     N = doc_length
     n = find_n(token)
     #if normalization(doc)!= 0 and n!=0:
-    return ( tf * math.log(N/n) ) / normalization(doc)
+    return ( tf * math.log(N/n) ) #/ normalization(doc)
     #else:
     #    return 0.0
 
@@ -72,11 +72,14 @@ for i in range(len(tokens)):
                 inverted_index[token] = ins_dict
             else:
                 for j in list(inverted_index[token].keys()):
+                    print(j)
                     if ( j == i ):
                         inverted_index[token][j][0] += 1
                         inverted_index[token][j][1].append(index)
                     else:
                         inverted_index[token][i] = [1, [index]]
+
+
 
 
 nis()
@@ -99,6 +102,9 @@ for doc in range(doc_length):
             vector_space[doc].append(tfc(key, temp[0], doc))
         else:
             vector_space[doc].append(0)
+
+
+
     
 
 
@@ -108,6 +114,4 @@ for doc in range(doc_length):
 #        print(key2)
 #
 
-for i in range(len(vector_space)):
-    print(vector_space[i])
 
