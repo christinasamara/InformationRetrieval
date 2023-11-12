@@ -42,23 +42,27 @@ def numerator(vector_space):
             if i in value:
                 tf = inverted_index[key][i][0] + 1 #first element of outer list + 1
                 n = len(inverted_index[key]) #length of inner list 
-                print(tf, n)
                 vector_space[i].append(tfc(tf, n))
             else:
                 vector_space[i].append(1) #not zero
 
+
 def normalize(vector_space):
+    N = doc_length
     for i in range(len(vector_space)):
+        result = 0
+        product = 0
         for key, value in inverted_index.items():
             if i in value:
                 tf = inverted_index[key][i][0]
-                n = len(inverted_index[key])
                 #print(tf, n)
             else:
                 tf = 1
-                n = 1
-
-
+            n = len(inverted_index[key])
+            product += tf * math.log(N/n)
+            result += math.sqrt(product)
+        print(result)
+        vector_space[i] = [num / result for num in vector_space[i]]
 
 
 def tfc(tf, n):
@@ -71,4 +75,4 @@ create_inverted_index(inverted_index)
 #print(len(inverted_index))
 numerator(vector_space)
 normalize(vector_space)
-
+print(vector_space)
