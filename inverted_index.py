@@ -9,7 +9,7 @@ stop_words = nltk.corpus.stopwords.words('english')
 tokens = []
 inverted_index = {}
 flag = 0
-doc_length = len(os.listdir("C:\\Users\\chris\\Downloads\\ir_project\\docs"))
+doc_length = len(os.listdir("/Users/stella/Documents/docs"))
 
 def find_n(token):
     count = 0
@@ -24,7 +24,7 @@ def txc (token, tf):
     return tf 
 
 ni = []
-#array2 -> nonzero elements in each column (ni)
+
 def nis():
     for i in inverted_index.keys():
         ni.append(find_n(i))
@@ -41,7 +41,6 @@ def paronomastistfc(doc):
         for key2, value2 in value.items():
             if (key2 == doc):
                 arrayparonom.append( (value2[0] * math.log(N/ni[i])) ** 2 )
-                print(value2)
     return sum(arrayparonom)
 
 #bgazei la8os epeidh to teleytaio keimeno einai ola 0
@@ -49,14 +48,14 @@ def paronomastistfc(doc):
 def tfc (token, tf, doc):
     N = doc_length
     n = find_n(token)
-    print(n)
+    print(n, N)
     if (paronomastistfc(doc)!= 0 and n!=0):
         return ( tf * math.log(N/n) ) / paronomastistfc(doc)
     else:
         return 0.0
 
 
-for filename in glob.glob("C:\\Users\\chris\\Downloads\\ir_project\\docs\*"):
+for filename in glob.glob("/Users/stella/Documents/docs/*"):
     with open(os.path.join(os.getcwd(), filename), "r") as f:
         text = f.read()
         tokens.append(text.lower().split("\n"))
@@ -89,7 +88,7 @@ for doc in range(doc_length):
     for key, value in inverted_index.items():
         temp = value.setdefault(row, 0)
         if (temp != 0):
-            vector_space[row].append(tfc(value, temp[0], doc))
+            vector_space[row].append(tfc(key, temp[0], doc))
         else:
             vector_space[row].append(0)
     row += 1 
