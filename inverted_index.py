@@ -11,6 +11,7 @@ inverted_index = {}
 flag = 0
 doc_length = len(os.listdir("C:\\Users\\chris\\Downloads\\ir_project\\docs"))
 
+
 def find_n(token):
     count = 0
     for key, value in inverted_index.items():
@@ -41,23 +42,19 @@ def normalization(doc):
         ni = len(value)
         for key2, value2 in value.items():
             if (key2 == doc):
-                #tfi = inverted_index[key][key2][0]
-                tfi2 = value.setdefault(key2, 0)
-                sum +=  math.sqrt((tfi2[0] * math.log(N/ni)) ** 2)
-    #print(sum)
-    return(sum)
+                sum += (value2[0] * math.log(N/ni)) ** 2
+    return(math.sqrt(sum))
 
 #bgazei la8os epeidh to teleytaio keimeno einai ola 0
+
 
 def tfc (token, tf, doc):
     N = doc_length
     n = find_n(token)
-    #print(tf, 'deytero')
-    #print(n, N)
-    if (normalization(doc)!= 0 and n!=0):
-        return ( tf * math.log(N/n) ) / normalization(doc)
-    else:
-        return 0.0
+    #if normalization(doc)!= 0 and n!=0:
+    return ( tf * math.log(N/n) ) / normalization(doc)
+    #else:
+    #    return 0.0
 
 
 for filename in glob.glob("C:\\Users\\chris\\Downloads\\ir_project\\docs\*"):
@@ -85,20 +82,24 @@ for i in range(len(tokens)):
 nis()
 vector_space = []
 
+
+
 for i in range(doc_length):
     vector_space.append([])
 
 
 for doc in range(doc_length):
     for key, value in inverted_index.items():
+        #print(value)
         temp = value.setdefault(doc, 0)
+        #print(temp)
+        #print("doc",doc)
+
         if (isinstance(temp, list)):
             vector_space[doc].append(tfc(key, temp[0], doc))
         else:
             vector_space[doc].append(0)
-    #print(doc)
-
-
+    
 
 
 
@@ -107,5 +108,6 @@ for doc in range(doc_length):
 #        print(key2)
 #
 
-#for i in range(len(vector_space)):
-#    print(vector_space[i])
+for i in range(len(vector_space)):
+    print(vector_space[i])
+
