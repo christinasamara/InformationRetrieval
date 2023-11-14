@@ -11,7 +11,7 @@ tokens = []
 inverted_index = {}
 vector_space_tfc = []
 vector_space_txc = []
-doc_length = len(os.listdir("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs30"))
+doc_length = len(os.listdir("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs"))
 vector_space_tfc = [ [] for _ in range(doc_length) ]
 vector_space_txc = [ [] for _ in range(doc_length) ]
 query_vector = []
@@ -25,7 +25,6 @@ def append_queries():
 def query_weighting(text, i):
     query = text[i]
     print(query)
-    query_vector = []
     q = query.split(" ")
     for key in inverted_index.keys():
         if key in q:
@@ -47,7 +46,7 @@ def nfx(q, key):
 
 
 def append_tokens():
-    for filename in glob.glob("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs30\*"):
+    for filename in glob.glob("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs\*"):
         with open(os.path.join(os.getcwd(), filename), "r") as f:
             text = f.read()
             tokens.append(text.lower().split("\n"))
@@ -143,8 +142,9 @@ def cosine(vector_space, query):
         query_norm = math.sqrt(sum(value ** 2 for value in query))
         doc_norm = math.sqrt(sum(value ** 2 for value in vector_space[i]))
         result = inner_product / (query_norm * doc_norm)
-        print(result)
+        #print(result)
         values.append(result)
+    print(values.index(max(values)))
     
 
 
