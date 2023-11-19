@@ -35,13 +35,16 @@ def query_weighting(text, i):
 
 def nfx(q, key):
     count = 0
+    max = 1
     for term in q:
         if term == key:
             count += 1
-    N = len(q)
-    tf = count / N
-    length = len(inverted_index[key])
-    idf = math.log(doc_length / (length +1))
+        if (count > max):
+            max = count
+    
+    tf = (0.5 * (count / max) + 0.5)
+    nt = len(inverted_index[key])
+    idf = math.log(doc_length / nt)
     return tf * idf
 
 
@@ -74,65 +77,59 @@ def numerator_tfc(vector_space):
     for i in range(doc_length):
         for key, value in inverted_index.items():
             if i in value:
-                tf = inverted_index[key][i][0] + 1 #first element of outer list + 1
+                tf = inverted_index[key][i][0] #first element of outer list + 1
                 n = len(inverted_index[key]) #length of inner list 
                 vector_space[i].append(tfc(tf, n))
             else:
-                vector_space[i].append(1) #not zero
+                vector_space[i].append(0) #not zero
 
 
 def numerator_txc(vector_space):
     for i in range(doc_length):
         for key, value in inverted_index.items():
             if i in value:
-                tf = inverted_index[key][i][0] + 1 #first element of outer list + 1
+                tf = inverted_index[key][i][0] #first element of outer list + 1
                 n = len(inverted_index[key]) #length of inner list 
                 vector_space[i].append(txc(tf))
             else:
-                vector_space[i].append(1) #not zero
+                vector_space[i].append(0) #not zero
 
 
 def normalize_tfc(vector_space):
     N = doc_length
     for i in range(len(vector_space)):
-        result = 0
         product = 0
         for key, value in inverted_index.items():
             if i in value:
-                tf = inverted_index[key][i][0] +1
+                tf = inverted_index[key][i][0]
                 #print(tf, n)
             else:
-                tf = 1
+                tf = 0
             n = len(inverted_index[key])
             product += (tf * math.log(N/n) ** 2)
-            result += math.sqrt(product)
-        vector_space[i] = [num / result for num in vector_space[i]]
+        vector_space[i] = [num / math.sqrt(product) for num in vector_space[i]]
 
 
 def tfc(tf, n):
     N = doc_length
-    return (tf +1) * math.log(N/n)
+    return (tf) * math.log(N/n)
 
 
 def txc(tf):
-    return (tf +1) 
+    return (tf) 
 
 
 def normalize_txc(vector_space):
-    N = doc_length
     for i in range(len(vector_space)):
-        result = 0
         product = 0
         for key, value in inverted_index.items():
             if i in value:
-                tf = inverted_index[key][i][0] + 1
+                tf = inverted_index[key][i][0]
                 #print(tf, n)
             else:
-                tf = 1
-            n = len(inverted_index[key])
+                tf = 0
             product += (tf ** 2) 
-            result += math.sqrt(product)
-        vector_space[i] = [num / result for num in vector_space[i]]
+        vector_space[i] = [num / math.sqrt(product) for num in vector_space[i]]
 
 
 def cosine(vector_space, query):
@@ -142,9 +139,8 @@ def cosine(vector_space, query):
         query_norm = math.sqrt(sum(value ** 2 for value in query))
         doc_norm = math.sqrt(sum(value ** 2 for value in vector_space[i]))
         result = inner_product / (query_norm * doc_norm)
-        #print(result)
         values.append(result)
-    print(values.index(max(values)))
+    #print(values.index(max(values)))
     
 
 
@@ -163,4 +159,7 @@ normalize_txc(vector_space_txc)
 
 text = append_queries()
 query_weighting(text, QUERY)
-cosine(vector_space_tfc, query_vector)
+cosine(vector_space_txc, query_vector)
+for i in query_vector:
+    if i != 0:
+        print(i)
