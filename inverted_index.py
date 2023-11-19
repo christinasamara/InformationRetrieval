@@ -3,7 +3,7 @@ import os
 import numpy as np
 import nltk 
 import math
-QUERY = 1
+QUERY = 2
 
 nltk.download('stopwords')
 stop_words = nltk.corpus.stopwords.words('english')
@@ -15,6 +15,16 @@ doc_length = len(os.listdir("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_R
 vector_space_tfc = [ [] for _ in range(doc_length) ]
 vector_space_txc = [ [] for _ in range(doc_length) ]
 query_vector = []
+listOfNames = []
+
+
+def rele_docs(ele):
+    s = os.listdir("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs")
+    count = 0
+    for i in s:
+        count +=1
+        if count == ele + 1:
+            return i
 
 def append_queries():
     f = open("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\Queries_20", "r")
@@ -23,14 +33,15 @@ def append_queries():
 
 
 def query_weighting(text, i):
+    query_vector = []
     query = text[i]
-    print(query)
     q = query.split(" ")
     for key in inverted_index.keys():
         if key in q:
             query_vector.append(nfx(q,key))
         else:
             query_vector.append(0)
+    return query_vector
 
 
 def nfx(q, key):
@@ -53,6 +64,9 @@ def append_tokens():
         with open(os.path.join(os.getcwd(), filename), "r") as f:
             text = f.read()
             tokens.append(text.lower().split("\n"))
+    listOfNames.append(os.path.basename(filename))
+
+
 
 
 def cleanup(token_lists):
@@ -134,32 +148,38 @@ def normalize_txc(vector_space):
 
 def cosine(vector_space, query):
     values = []
+    query_norm = np.linalg.norm(query)
     for i in range(len(vector_space)):
         inner_product = np.dot(vector_space[i], query)
-        query_norm = math.sqrt(sum(value ** 2 for value in query))
-        doc_norm = math.sqrt(sum(value ** 2 for value in vector_space[i]))
+        doc_norm = np.linalg.norm(vector_space[i])
         result = inner_product / (query_norm * doc_norm)
         values.append(result)
-    #print(values.index(max(values)))
+
+    temp = sorted(values)[-20:]
+    res = []
+    for ele in temp:
+        res.append(values.index(ele))
+    newlist = []
+    for i in res:
+        newlist.append(rele_docs(i))
+    #print(newlist)
+
+
+    
+
     
 
 
 
-append_tokens() #3219 tokens
-tokens = cleanup(tokens) #1758 tokens
+append_tokens()
+tokens = cleanup(tokens)
 create_inverted_index(inverted_index)
-#print(len(inverted_index))
 numerator_tfc(vector_space_tfc)
-normalize_tfc(vector_space_tfc)
-
 numerator_txc(vector_space_txc)
-normalize_txc(vector_space_txc)
-
-#print(len(vector_space_txc))
-
+#normalize_tfc()
+#normalize_txc()
 text = append_queries()
-query_weighting(text, QUERY)
+query_vector = query_weighting(text, QUERY)
 cosine(vector_space_txc, query_vector)
-for i in query_vector:
-    if i != 0:
-        print(i)
+
+print(listOfNames)
