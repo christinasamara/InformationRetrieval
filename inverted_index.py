@@ -15,7 +15,8 @@ doc_length = len(os.listdir("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_R
 vector_space_tfc = [ [] for _ in range(doc_length) ]
 vector_space_txc = [ [] for _ in range(doc_length) ]
 query_vector = []
-listOfNames = []
+listOfDocNames = []
+K = 3
 
 
 def rele_docs(ele):
@@ -64,7 +65,7 @@ def append_tokens():
         with open(os.path.join(os.getcwd(), filename), "r") as f:
             text = f.read()
             tokens.append(text.lower().split("\n"))
-    listOfNames.append(os.path.basename(filename))
+        listOfDocNames.append(os.path.basename(filename))
 
 
 
@@ -75,23 +76,23 @@ def cleanup(token_lists):
         
 
 def create_inverted_index(inverted_index):
-    for i in range(len(tokens)):
+    for i in range(len(listOfDocNames)):
         for index, token in enumerate(tokens[i]):
             if token not in inverted_index:
-                inverted_index[token] = {i: [1, [index]]}
+                inverted_index[token] = {listOfDocNames[i]: [1, [index]]}
             else:
                 if i in inverted_index[token]:
-                    inverted_index[token][i][0] += 1
-                    inverted_index[token][i][1].append(index)
+                    inverted_index[token][listOfDocNames[i]][0] += 1
+                    inverted_index[token][listOfDocNames[i]][1].append(index)
                 else:
-                    inverted_index[token][i] = [1, [index]]
+                    inverted_index[token][listOfDocNames[i]] = [1, [index]]
 
 
 def numerator_tfc(vector_space):
-    for i in range(doc_length):
+    for i in range(len(listOfDocNames)):
         for key, value in inverted_index.items():
-            if i in value:
-                tf = inverted_index[key][i][0] #first element of outer list + 1
+            if listOfDocNames[i] in value:
+                tf = inverted_index[key][listOfDocNames[i]][0] #first element of outer list + 1
                 n = len(inverted_index[key]) #length of inner list 
                 vector_space[i].append(tfc(tf, n))
             else:
@@ -99,10 +100,10 @@ def numerator_tfc(vector_space):
 
 
 def numerator_txc(vector_space):
-    for i in range(doc_length):
+    for i in range(len(listOfDocNames)):
         for key, value in inverted_index.items():
-            if i in value:
-                tf = inverted_index[key][i][0] #first element of outer list + 1
+            if listOfDocNames[i] in value:
+                tf = inverted_index[key][listOfDocNames[i]][0] #first element of outer list + 1
                 n = len(inverted_index[key]) #length of inner list 
                 vector_space[i].append(txc(tf))
             else:
@@ -111,11 +112,11 @@ def numerator_txc(vector_space):
 
 def normalize_tfc(vector_space):
     N = doc_length
-    for i in range(len(vector_space)):
+    for i in range(len(listOfDocNames)):
         product = 0
         for key, value in inverted_index.items():
-            if i in value:
-                tf = inverted_index[key][i][0]
+            if listOfDocNames[i] in value:
+                tf = inverted_index[key][listOfDocNames[i]][0]
                 #print(tf, n)
             else:
                 tf = 0
@@ -134,11 +135,11 @@ def txc(tf):
 
 
 def normalize_txc(vector_space):
-    for i in range(len(vector_space)):
+    for i in range(len(listOfDocNames)):
         product = 0
         for key, value in inverted_index.items():
-            if i in value:
-                tf = inverted_index[key][i][0]
+            if listOfDocNames[i] in value:
+                tf = inverted_index[key][listOfDocNames[i]][0]
                 #print(tf, n)
             else:
                 tf = 0
@@ -147,27 +148,18 @@ def normalize_txc(vector_space):
 
 
 def cosine(vector_space, query):
-    values = []
+    similarities = []
     query_norm = np.linalg.norm(query)
     for i in range(len(vector_space)):
         inner_product = np.dot(vector_space[i], query)
         doc_norm = np.linalg.norm(vector_space[i])
         result = inner_product / (query_norm * doc_norm)
-        values.append(result)
-
-    temp = sorted(values)[-20:]
-    res = []
+        similarities.append(result)
+    temp = sorted(similarities)[-K:]
+    results = []
     for ele in temp:
-        res.append(values.index(ele))
-    newlist = []
-    for i in res:
-        newlist.append(rele_docs(i))
-    #print(newlist)
-
-
-    
-
-    
+        results.append(listOfDocNames[similarities.index(ele)])
+    print(results)
 
 
 
@@ -176,10 +168,10 @@ tokens = cleanup(tokens)
 create_inverted_index(inverted_index)
 numerator_tfc(vector_space_tfc)
 numerator_txc(vector_space_txc)
-#normalize_tfc()
-#normalize_txc()
+normalize_tfc(vector_space_tfc)
+normalize_txc(vector_space_txc)
+#print(len(inverted_index))
+print(len(vector_space_tfc))
 text = append_queries()
 query_vector = query_weighting(text, QUERY)
-cosine(vector_space_txc, query_vector)
-
-print(listOfNames)
+cosine(vector_space_tfc, query_vector)
