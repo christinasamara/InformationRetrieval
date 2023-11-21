@@ -159,7 +159,7 @@ def cosine(vector_space, query):
     results = []
     for ele in temp:
         results.append(listOfDocNames[similarities.index(ele)])
-    print(results)
+    #print(results)
 
 
 
@@ -170,7 +170,7 @@ numerator_tfc(vector_space_tfc)
 numerator_txc(vector_space_txc)
 normalize_tfc(vector_space_tfc)
 normalize_txc(vector_space_txc)
-#print(len(inverted_index))
+print(inverted_index)
 print(len(vector_space_tfc))
 text = append_queries()
 query_vector = query_weighting(text, QUERY)
