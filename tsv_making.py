@@ -24,7 +24,7 @@ def queries_making():
             t.write(line)
 
 def collection():
-    for filename in glob.glob("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs30\*"):
+    for filename in glob.glob("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs\*"):
         with open(os.path.join(os.getcwd(), filename), "r") as f:
             text=f.read().replace("\n", " ")
             line = text
@@ -41,7 +41,6 @@ docs_making()
 queries_making()
 collection()
 queries()
-print(mycollection)
-print(myqueries)
+print(mycollection[1])
 
 
