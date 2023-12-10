@@ -3,7 +3,7 @@ import os
 import numpy as np
 import nltk 
 import math
-QUERY = 2
+QUERY = 0
 
 nltk.download('stopwords')
 stop_words = nltk.corpus.stopwords.words('english')
@@ -16,7 +16,7 @@ vector_space_tfc = [ [] for _ in range(doc_length) ]
 vector_space_txc = [ [] for _ in range(doc_length) ]
 query_vector = []
 listOfDocNames = []
-K = 3
+K = 20
 
 
 def rele_docs(ele):
@@ -159,19 +159,46 @@ def cosine(vector_space, query):
     results = []
     for ele in temp:
         results.append(listOfDocNames[similarities.index(ele)])
-    #print(results)
+    return results
 
+
+
+
+def start_tfc():
+    numerator_tfc(vector_space_tfc)
+    normalize_tfc(vector_space_tfc)
+
+def start_txc():
+    numerator_txc(vector_space_txc)
+    normalize_txc(vector_space_txc)
+
+def run_all_queries_tfc():
+    queries = append_queries()
+    f = open("tfc_results.txt", "w")
+    f.truncate()
+    for query_num in range(len(queries)):
+        query_vector = query_weighting(queries, query_num)
+        line = cosine(vector_space_tfc, query_vector)
+        for d in line:
+            f.write("%s " % d.lstrip("0"))
+        f.write("\n")
+        
+def run_all_queries_txc():
+    queries = append_queries()
+    f = open("txc_results.txt", "w")
+    f.truncate()
+    for query_num in range(len(queries)):
+        query_vector = query_weighting(queries, query_num)
+        line = cosine(vector_space_txc, query_vector)
+        for d in line:
+            f.write("%s " % d.lstrip("0"))
+        f.write("\n")
 
 
 append_tokens()
 tokens = cleanup(tokens)
 create_inverted_index(inverted_index)
-numerator_tfc(vector_space_tfc)
-numerator_txc(vector_space_txc)
-normalize_tfc(vector_space_tfc)
-normalize_txc(vector_space_txc)
-print(inverted_index)
-print(len(vector_space_tfc))
-text = append_queries()
-query_vector = query_weighting(text, QUERY)
-cosine(vector_space_tfc, query_vector)
+start_tfc()
+run_all_queries_tfc()
+start_txc()
+run_all_queries_txc()
