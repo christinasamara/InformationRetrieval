@@ -52,9 +52,18 @@ def ap_results_txc(file, query_file):
         f.write("\n")
 
 
+def ap_results_colbert(file, query_file):
+    f = open(file, "w")
+    q = open(query_file, "r")
+    results = initialization("colbert_results.txt")
+    for query in range(len(q.read().split("\n"))):
+        f.write(str(precisions(query, results)))
+        f.write("\n")
+
 open_relevants("Relevant_20")
 ap_results_tfc("ap_results_tfc.txt", "Queries_20")
 ap_results_txc("ap_results_txc.txt", "Queries_20")
+ap_results_colbert("ap_results_colbert.txt", "Queries_20")
 
 # initialization("txc_results.txt")
 # for query in range(len(f.read().split("\n"))):
