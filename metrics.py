@@ -60,18 +60,53 @@ def ap_results_colbert(file, query_file):
         f.write(str(precisions(query, results)))
         f.write("\n")
 
+
+def calculate_relevance(file_results, file_detailed):
+    f = open(file_detailed, "r")
+    text = f.read().split("\n")
+    for i in range(len(text)):
+        text[i] = list(text[i].split(" "))
+
+    g = open(file_results, "r")
+    res = g.read().split("\n")
+    for i in range(len(res)):
+        res[i] = list(res[i].split(" "))
+
+    relevances = []
+    for i in range(len(text)):
+        relevance = []
+        res[i].reverse()
+        for z in range(len(res[i])):
+            for j in range(0, len(text[i]), 2):
+                if res[i][z] == text[i][j]:
+                    sum = 0
+                    for digit in text[i][j+1]:
+                        sum += int(digit)
+                    value = math.log(z + 2, 2) # start from position 1 
+                    relevance.append(sum / value)
+                    break
+            else:
+                relevance.append(0)
+        relevances.append(relevance)
+    return relevances
+
+def dcgk(relevances, file):
+    f = open(file, "w")
+    for i in range(len(relevances)):
+        value = 0
+        for j in range(len(relevances[i])):
+            value = sum(relevances[i][:j+1])
+            result = str(value) + " "
+            f.write(result)
+        f.write("\n")
+
+
+
+
 open_relevants("Relevant_20")
 ap_results_tfc("ap_results_tfc.txt", "Queries_20")
 ap_results_txc("ap_results_txc.txt", "Queries_20")
 ap_results_colbert("ap_results_colbert.txt", "Queries_20")
 
-# initialization("txc_results.txt")
-# for query in range(len(f.read().split("\n"))):
-#     print(precisions(query))
-
-
-
-
-
-
-
+relevances = calculate_relevance("tfc_results.txt", "query_doc_relevance.txt")
+dcgk(relevances, "dcgk_results_tfc.txt")
