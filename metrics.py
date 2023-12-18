@@ -90,16 +90,38 @@ def calculate_relevance(file_results, file_detailed):
         relevances.append(relevance)
     return relevances
 
-def dcgk(relevances, file):
-    f = open(file, "w")
+def dcgk(relevances):
+    results = []
     for i in range(len(relevances)):
         value = 0
+        result = []
         for j in range(len(relevances[i])):
             value = sum(relevances[i][:j+1])
-            result = str(value) + " "
+            result.append(value)
+        results.append(result)
+    return results
+
+
+def idcgk(relevances, file):
+    f = open(file, "w")
+    dcgk_results = dcgk(relevances)
+    print(relevances[7])
+    new_relevances = [sorted(sublist, reverse=True) for sublist in relevances]
+    idcgk_results = dcgk(new_relevances)
+    print(new_relevances[7])
+    for i in range(len(dcgk_results)):
+        for j in range(len(dcgk_results[i])):
+            if idcgk_results[i][j] != 0:
+                value = dcgk_results[i][j] / idcgk_results[i][j]
+                result = str(value) + " "
+            else:
+                result = "0 "
             f.write(result)
         f.write("\n")
+        
 
+
+    
 
 
 
@@ -109,4 +131,4 @@ ap_results_txc("ap_results_txc.txt", "Queries_20")
 ap_results_colbert("ap_results_colbert.txt", "Queries_20")
 
 relevances = calculate_relevance("tfc_results.txt", "query_doc_relevance.txt")
-dcgk(relevances, "dcgk_results_tfc.txt")
+idcgk(relevances, "ndcgk_results_tfc.txt")
