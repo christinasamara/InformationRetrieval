@@ -90,16 +90,48 @@ def calculate_relevance(file_results, file_detailed):
         relevances.append(relevance)
     return relevances
 
-def dcgk(relevances, file):
-    f = open(file, "w")
+
+def idcgk(relevances):
+    irelevances = []
+    for i in relevances:
+        irel = sorted(i, reverse=True)
+        irelevances.append(irel)
+    return irelevances
+
+
+def dcgk(relevances):
+    results = []
     for i in range(len(relevances)):
-        value = 0
-        result = 0
+        result = []
         for j in range(len(relevances[i])):
-            value = sum(relevances[i][:j+1]) / 8
-            result = str(value) + " "
-            f.write(result)
+            value = sum(relevances[i][:j+1])
+            result.append(value)
+        results.append(result)
+    return results
+
+
+def ndcgk(relevances, file):
+    f = open(file, "w")
+    dcgk_list = dcgk(relevances)
+    irelevances = idcgk(relevances)
+    idcgk_list = dcgk(irelevances)
+    ndcgk_list = []
+    # ari8mitis = np.array(dcgk_list)
+    # paronomastis = np.array(idcgk_list)
+    # ndcgk_list = np.divide(ari8mitis, paronomastis)
+    for i in range(len(dcgk_list)):
+        res = []
+        res = [ j / k for j, k in zip(dcgk_list[i], idcgk_list[i])]
+        ndcgk_list.append(res)
+
+    for i in range(len(ndcgk_list)):
+        for j in range(len(ndcgk_list[i])):
+            f.write(str(ndcgk_list[i][j]))
+            f.write("\t")
         f.write("\n")
+
+
+    
 
 
 
@@ -108,5 +140,9 @@ ap_results_tfc("ap_results_tfc.txt", "Queries_20")
 ap_results_txc("ap_results_txc.txt", "Queries_20")
 ap_results_colbert("ap_results_colbert.txt", "Queries_20")
 
-relevances = calculate_relevance("tfc_results.txt", "query_doc_relevance.txt")
-dcgk(relevances, "ndcgk_results_tfc.txt")
+relevances_tfc = calculate_relevance("tfc_results.txt", "query_doc_relevance.txt")
+ndcgk(relevances_tfc, "ndcgk_results_tfc.txt")
+relevances_txc = calculate_relevance("txc_results.txt", "query_doc_relevance.txt")
+ndcgk(relevances_txc, "ndcgk_results_txc.txt")
+relevances_colbert = calculate_relevance("colbert_results.txt", "query_doc_relevance.txt")
+ndcgk(relevances_colbert, "ndcgk_results_colbert.txt")
