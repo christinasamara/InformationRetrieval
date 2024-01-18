@@ -131,7 +131,8 @@ def ndcgk(relevances, file):
         f.write("\n")
 
 
-    
+
+
 
 
 
