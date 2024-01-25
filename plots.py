@@ -57,7 +57,7 @@ def plot_ndcgk(tfc_file, txc_file, colbert_file):
         results_colbert[i] = [float(x) for x in results_colbert[i]]
     indexes = list(range(20))
 
-    for i in range(2):
+    for i in range(20):
         plt.plot(indexes, results_tfc[i],color="#11009E", marker="o",mfc="#EEF5FF", label="tfc")
         plt.plot(indexes,results_txc[i], color="#86B6F6", marker="o",mfc="#EEF5FF", label="txc")
         plt.plot(indexes,results_colbert[i], color="#176B87", marker="o", mfc="#EEF5FF", label="colbert")
@@ -74,4 +74,4 @@ def plot_ndcgk(tfc_file, txc_file, colbert_file):
 
 
 plot_ap("ap_results_tfc.txt", "ap_results_txc.txt", "ap_results_colbert.txt")
-#plot_ndcgk("ndcgk_results_tfc.txt", "ndcgk_results_txc.txt", "ndcgk_results_colbert.txt")
+plot_ndcgk("ndcgk_results_tfc.txt", "ndcgk_results_txc.txt", "ndcgk_results_colbert.txt")

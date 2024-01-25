@@ -7,6 +7,12 @@ results = []
 relevant_docs = []
 K = 20
 
+def open_relevants(file):
+    f = open(file, "r")
+    text = f.read().split("\n")
+    for t in text:
+        relevant_docs.append(t)
+
 def initialization(file):
     results = [] 
     f = open(file, "r")
@@ -14,12 +20,6 @@ def initialization(file):
     for line in lines:
         results.append(line.split(" "))
     return results
-
-def open_relevants(file):
-    f = open(file, "r")
-    text = f.read().split("\n")
-    for t in text:
-        relevant_docs.append(t)
 
 def precisions(QUERY, results):
     count_relevant = 1
@@ -116,9 +116,6 @@ def ndcgk(relevances, file):
     irelevances = idcgk(relevances)
     idcgk_list = dcgk(irelevances)
     ndcgk_list = []
-    # ari8mitis = np.array(dcgk_list)
-    # paronomastis = np.array(idcgk_list)
-    # ndcgk_list = np.divide(ari8mitis, paronomastis)
     for i in range(len(dcgk_list)):
         res = []
         res = [ j / k for j, k in zip(dcgk_list[i], idcgk_list[i])]

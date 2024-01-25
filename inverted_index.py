@@ -18,15 +18,6 @@ query_vector = []
 listOfDocNames = []
 K = 20
 
-
-def rele_docs(ele):
-    s = os.listdir("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs")
-    count = 0
-    for i in s:
-        count +=1
-        if count == ele + 1:
-            return i
-
 def append_queries():
     f = open("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\Queries_20", "r")
     text = f.read().split('\n')
