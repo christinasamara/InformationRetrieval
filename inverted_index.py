@@ -11,7 +11,7 @@ tokens = []
 inverted_index = {}
 vector_space_tfc = []
 vector_space_txc = []
-doc_length = len(os.listdir("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs"))
+doc_length = len(os.listdir("docs"))
 vector_space_tfc = [ [] for _ in range(doc_length) ]
 vector_space_txc = [ [] for _ in range(doc_length) ]
 query_vector = []
@@ -19,7 +19,7 @@ listOfDocNames = []
 K = 20
 
 def append_queries():
-    f = open("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\Queries_20", "r")
+    f = open("Queries_20", "r")
     text = f.read().split('\n')
     return text
 
@@ -52,7 +52,7 @@ def nfx(q, key):
 
 
 def append_tokens():
-    for filename in glob.glob("C:\\Users\\chris\\Documents\\ceid\\7\\INFORMATION_RETRIEVAL\\InformationRetrieval\\docs\*"):
+    for filename in glob.glob("docs\*"):
         with open(os.path.join(os.getcwd(), filename), "r") as f:
             text = f.read()
             tokens.append(text.lower().split("\n"))
